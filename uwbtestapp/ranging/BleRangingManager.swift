@@ -19,18 +19,25 @@ class BleRangingManager: NSObject, CBCentralManagerDelegate {
     @Published var positionY : Float = 0
     var roomSideX: Float! = 0
     var roomSideY: Float! = 0
-    var rangingResults: [Double] = [0, 0, 0, 0]
+    var realPositionX: Float!
+    var realPositionY: Float!
+    var testDescription: String!
+    var rangingResults: [Float] = [0, 0, 0, 0]
     var centralManager: CBCentralManager!
     var devices: [CBPeripheral] = [] // array to store discovered devices
     var rssi: [Double] = [] // array to store RSSI values of devices
-    var distance: [Double] = [] // array to store distance values of devices
-    let txPower = -69.0 // calibrated RSSI value at 1 meter for your devices
-    let n = 3.0 // environmental factor for your devices
+    var distance: [Float] = [] // array to store distance values of devices
+    let txPower : Float = -69.0 // calibrated RSSI value at 1 meter for your devices
+    let n : Float = 3.0 // environmental factor for your devices
+    private var csvResultManager: CsvResultManager = CsvResultManager()
     
-    init(roomSideX: Float, roomSideY: Float) {
+    init(roomSideX: Float, roomSideY: Float, realPositionX: Float, realPositionY: Float, testDescription: String) {
         super.init()
         self.roomSideX = roomSideX
         self.roomSideY = roomSideY
+        self.realPositionX = realPositionX
+        self.realPositionY = realPositionY
+        self.testDescription = testDescription
     }
     
     func discoverDevices() {
@@ -39,14 +46,16 @@ class BleRangingManager: NSObject, CBCentralManagerDelegate {
         }
     
     public func startRanging() {
-        if(centralManager.isScanning == false){
-        centralManager = CBCentralManager(delegate: self, queue: nil)
+        if(centralManager == nil || centralManager.isScanning == false){
+            centralManager = CBCentralManager(delegate: self, queue: nil)
+            csvResultManager.startFile(technology: "BLE", rangingDescription: self.testDescription, realPositionX: self.realPositionX, realPositionY: self.realPositionY, roomSideX: self.roomSideX, roomSideY: self.roomSideY)
         }
     }
     
     public func stopRanging() {
         if(centralManager.isScanning){
-        centralManager.stopScan()
+            centralManager.stopScan()
+            csvResultManager.saveToCSV()
         }
     }
     
@@ -66,12 +75,14 @@ class BleRangingManager: NSObject, CBCentralManagerDelegate {
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
         if(estimoteUuids.contains(peripheral.publicIdentifier)){
             rssi.append(RSSI.doubleValue)
-            let distanceValue = calculateDistance(RSSI: RSSI.doubleValue, txPower: txPower, n: n)
+            let distanceValue = calculateDistance(RSSI: RSSI.floatValue, txPower: txPower, n: n)
             distance.append(distanceValue)
-            print("Estimote public identifier: \(peripheral.publicIdentifier ?? "Unknown"), RSSI: \(RSSI), Distance: \(distanceValue) meters")
+            print("Estimote public identifier: \(peripheral.publicIdentifier), RSSI: \(RSSI), Distance: \(distanceValue) meters")
             saveResult(deviceUuid: peripheral.identifier.uuidString, range: distanceValue)
             if(isRangingComplete()){
                 printRangingResults()
+                calculateDevicePosition()
+                csvResultManager.addRangingResult(positionX: self.positionX, positionY: self.positionY, d1: rangingResults[0], d2: rangingResults[1], d3: rangingResults[2], d4: rangingResults[3])
                 clearRangingResults()
                 discoverDevices()
             }
@@ -92,8 +103,8 @@ class BleRangingManager: NSObject, CBCentralManagerDelegate {
     }
 
     
-    func calculateDistance(RSSI: Double, txPower: Double, n: Double) -> Double {
-        let ratio = RSSI / txPower
+    func calculateDistance(RSSI: Float, txPower: Float, n: Float) -> Float {
+        let ratio: Float = RSSI / txPower
         if ratio < 1.0 {
             return pow(ratio, 10)
         } else {
@@ -101,7 +112,14 @@ class BleRangingManager: NSObject, CBCentralManagerDelegate {
         }
     }
     
-    func saveResult(deviceUuid: String, range: Double) {
+    func calculateDevicePosition(){
+       let devicePosition = getCoordinates(d1: rangingResults[0], d2: rangingResults[1], d3: rangingResults[2], d4: rangingResults[3], sideY: self.roomSideY, sideX: self.roomSideX)
+        print("device position x: \(devicePosition.x), y: \(devicePosition.y)")
+        self.positionX = devicePosition.x
+        self.positionY = devicePosition.y
+    }
+    
+    func saveResult(deviceUuid: String, range: Float) {
         let index = estimoteUuids.firstIndex(of: deviceUuid)
         if(index != nil){
             rangingResults[index!] = range

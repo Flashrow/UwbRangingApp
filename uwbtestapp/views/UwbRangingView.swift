@@ -10,13 +10,19 @@ import SwiftUI
 struct UwbRangingView :View{
     var roomSideX : Float!
     var roomSideY : Float!
+    var realPositionX : Float!
+    var realPositionY : Float!
+    var testDescription : String!
     @ObservedObject var uwbManager: EstimoteUWBManagerExample
     @State var isRanging : Bool = false;
     
-    init(roomSideX : Float, roomSideY : Float){
+    init(roomSideX : Float, roomSideY : Float, realPositionX : Float, realPositionY : Float, testDescription : String){
         self.roomSideX = roomSideX
         self.roomSideY = roomSideY
-        uwbManager = EstimoteUWBManagerExample(roomSideX: self.roomSideX, roomSideY: self.roomSideY)
+        self.realPositionY = realPositionY
+        self.realPositionX = realPositionX
+        self.testDescription = testDescription
+        uwbManager = EstimoteUWBManagerExample(roomSideX: self.roomSideX, roomSideY: self.roomSideY, realPositionX: realPositionX, realPositionY: realPositionY, testDescription: testDescription)
     }
     
     var body: some View {
@@ -25,10 +31,29 @@ struct UwbRangingView :View{
             Button(action: isRanging ? stopUwbRanging : startUwbRanging){
                 Text(isRanging ? "Stop Uwb Ranging" : "Start Uwb Ranging")
             }
-            HStack{
-                Text("\(uwbManager.positionX)")
-                Text("\(uwbManager.positionY)")
-            }
+            Spacer().frame(height: 40)
+            Text("\(self.testDescription)")
+            VStack{
+                Text("Ranging position:")
+                HStack{
+                    Text("X: \(uwbManager.positionX)")
+                    Text("Y: \(uwbManager.positionY)")
+                }
+            }.padding()
+            VStack{
+                Text("Real position:")
+                HStack{
+                    Text("X: \(self.realPositionX)")
+                    Text("Y: \(self.realPositionY)")
+                }
+            }.padding()
+            VStack{
+                Text("Difference:")
+                HStack{
+                    Text("X: \(abs(uwbManager.positionX - self.realPositionX))")
+                    Text("Y: \(abs(uwbManager.positionX - self.realPositionY))")
+                }
+            }.padding()
             Spacer()
         }
     }

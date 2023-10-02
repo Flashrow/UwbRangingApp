@@ -7,50 +7,53 @@ struct ContentView: View {
     @State var phonePositionY : Float
     @State var roomSideX : Float
     @State var roomSideY : Float
-    let columns = [
-        GridItem(.adaptive(minimum: 100)),
-        GridItem(.flexible()),
-        GridItem(.fixed(50))
-    ]
+    @State var description = ""
     var body: some View {
         NavigationView {
-            VStack(){
-                NavigationLink(destination: UwbRangingView(roomSideX: self.roomSideX, roomSideY: self.roomSideY)) {
-                    Text("Go to UWB Ranging view")
-                }.frame(minHeight: 50)
-                NavigationLink(destination: BleRangingView(roomSideX: self.roomSideX, roomSideY: self.roomSideY)) {
-                    Text("Go to BLE Ranging view")
-                }.frame(minHeight: 50)
-                Spacer()
-                VStack{
-                    Text("Wymiary pomieszczenia [m]").padding()
-                    HStack{
-                        Text("X:").padding()
-                        TextField("0.0",
-                                  value: $roomSideX,
-                                  formatter: numberFormatter)
-                        Text("Y:").padding()
-                        TextField("0.0",
-                                  value: $roomSideY,
-                                  formatter: numberFormatter)
-                    }.padding()
+            ScrollView {
+                VStack(){
+                    NavigationLink(destination: UwbRangingView(roomSideX: self.roomSideX, roomSideY: self.roomSideY, realPositionX: self.phonePositionX, realPositionY: phonePositionY, testDescription: description)) {
+                        Text("Go to UWB Ranging view")
+                    }.frame(minHeight: 50)
+                    NavigationLink(destination: BleRangingView(roomSideX: self.roomSideX, roomSideY: self.roomSideY, realPositionX: self.phonePositionX, realPositionY: phonePositionY, testDescription: description)) {
+                        Text("Go to BLE Ranging view")
+                    }.frame(minHeight: 50)
+                    Spacer()
+                    VStack {
+                        Text("Wymiary pomieszczenia [m]").padding()
+                        HStack{
+                            Text("X:").padding()
+                            TextField("0.0",
+                                      value: $roomSideX,
+                                      formatter: numberFormatter)
+                            Text("Y:").padding()
+                            TextField("0.0",
+                                      value: $roomSideY,
+                                      formatter: numberFormatter)
+                        }.padding()
+                    }
+                    VStack {
+                        Text("Realne położenie telefonu [m]").padding()
+                        HStack{
+                            Text("X:").padding()
+                            TextField("0.0",
+                                      value: $phonePositionX,
+                                      formatter: numberFormatter)
+                            Text("Y:").padding()
+                            TextField("0.0",
+                                      value: $phonePositionY,
+                                      formatter: numberFormatter)
+                        }.padding()
+                    }
+                    HStack {
+                        Text("Opis badania").padding(.leading, 10)
+                        TextField("Opis...", text: $description).padding(.trailing, 10)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                    }
+                    Spacer()
                 }
-                VStack{
-                    Text("Realne położenie telefonu [m]").padding()
-                    HStack{
-                        Text("X:").padding()
-                        TextField("0.0",
-                                  value: $phonePositionX,
-                                  formatter: numberFormatter)
-                        Text("Y:").padding()
-                        TextField("0.0",
-                                  value: $phonePositionY,
-                                  formatter: numberFormatter)
-                    }.padding()
-                }
-                Spacer()
+                .navigationTitle("Uwb ranging app")
             }
-            .navigationTitle("Uwb ranging app")
         }
     }
 }

@@ -10,13 +10,19 @@ import SwiftUI
 struct BleRangingView :View{
     var roomSideX : Float!
     var roomSideY : Float!
+    var realPositionX : Float!
+    var realPositionY : Float!
+    var testDescription: String!
     var bleManager: BleRangingManager!
     @State var isRanging : Bool = false
     
-    init(roomSideX : Float, roomSideY : Float) {
+    init(roomSideX : Float, roomSideY : Float, realPositionX : Float, realPositionY : Float, testDescription : String) {
         self.roomSideY = roomSideY
         self.roomSideX = roomSideX
-        self.bleManager = BleRangingManager(roomSideX: self.roomSideX, roomSideY: self.roomSideY)
+        self.realPositionY = realPositionY
+        self.realPositionX = realPositionX
+        self.testDescription = testDescription
+        self.bleManager = BleRangingManager(roomSideX: self.roomSideX, roomSideY: self.roomSideY, realPositionX: realPositionX, realPositionY: realPositionY, testDescription: testDescription)
     }
     
     var body: some View {
@@ -24,10 +30,29 @@ struct BleRangingView :View{
         Button(action: isRanging ? stopBleRanging : startBleRanging){
             Text(isRanging ? "Stop BLE Ranging" : "Start BLE Ranging")
         }
-        HStack{
-            Text("\(bleManager.positionX)")
-            Text("\(bleManager.positionY)")
-        }
+        Spacer().frame(height: 40)
+        Text("\(self.testDescription)")
+        VStack{
+            Text("Ranging position:")
+            HStack{
+                Text("X: \(bleManager.positionX)")
+                Text("Y: \(bleManager.positionY)")
+            }
+        }.padding()
+        VStack{
+            Text("Real position:")
+            HStack{
+                Text("X: \(self.realPositionX)")
+                Text("Y: \(self.realPositionY)")
+            }
+        }.padding()
+        VStack{
+            Text("Difference:")
+            HStack{
+                Text("X: \(abs(bleManager.positionX - self.realPositionX))")
+                Text("Y: \(abs(bleManager.positionX - self.realPositionY))")
+            }
+        }.padding()
         Spacer()
     }
     func startBleRanging() {

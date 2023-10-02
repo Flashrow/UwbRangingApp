@@ -14,6 +14,9 @@ class EstimoteUWBManagerExample: NSObject, ObservableObject {
     @Published var positionY : Float = 0
     var roomSideX: Float! = 0
     var roomSideY: Float! = 0
+    var realPositionX: Float!
+    var realPositionY: Float!
+    var testDescription: String!
     var deviceList: [UWBIdentifiable] = []
     var rangingResults: [Float] = [0, 0, 0, 0]
     private var uwbManager: EstimoteUWBManager?
@@ -30,10 +33,13 @@ class EstimoteUWBManagerExample: NSObject, ObservableObject {
 //  6ae8d8db92d096a0ebf94d7f653f381c #3
 //  c4f3aa34f5ac22edacf7e0d620c41a32 #4
 
-    init(roomSideX: Float, roomSideY: Float) {
+    init(roomSideX: Float, roomSideY: Float, realPositionX: Float, realPositionY: Float, testDescription: String) {
         super.init()
         self.roomSideX = roomSideX
         self.roomSideY = roomSideY
+        self.realPositionX = realPositionX
+        self.realPositionY = realPositionY
+        self.testDescription = testDescription
     }
 
     private func setupUWB() {
@@ -46,7 +52,7 @@ class EstimoteUWBManagerExample: NSObject, ObservableObject {
     
     public func startScanning() {
         self.setupUWB()
-        csvResultManager.startFile(technology: "UWB", rangingTitle: "Pomiar Uwb", rangingDescription: "przykladowy opis", realPositionX: 0, realPositionY: 0, roomSideX: self.roomSideX, roomSideY: self.roomSideY)
+        csvResultManager.startFile(technology: "UWB", rangingDescription: self.testDescription, realPositionX: self.realPositionX, realPositionY: self.realPositionY, roomSideX: self.roomSideX, roomSideY: self.roomSideY)
     }
     
     public func stopScanning(){

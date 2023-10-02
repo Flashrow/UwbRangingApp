@@ -10,23 +10,21 @@ import UIKit
 class CsvResultManager {
     var csvResultString : String = ""
     var technology : String?
-    var rangingTitle : String?
     var rangingDescription : String?
     var realPositionX : Float?
     var realPositionY : Float?
     var roomSideX : Float?
     var roomSideY : Float?
     
-    func startFile(technology: String, rangingTitle: String, rangingDescription: String, realPositionX: Float, realPositionY: Float, roomSideX: Float, roomSideY: Float) {
+    func startFile(technology: String, rangingDescription: String, realPositionX: Float, realPositionY: Float, roomSideX: Float, roomSideY: Float) {
         self.technology = technology
-        self.rangingTitle = rangingTitle
         self.rangingDescription = rangingDescription
         self.realPositionX = realPositionX
         self.realPositionY = realPositionY
         self.roomSideX = roomSideX
         self.roomSideY = roomSideY
         
-        csvResultString = "technologia:;\(technology);tytul:;\(rangingTitle);opis:;\(rangingDescription);czas;\(NSDate());pozycja telefonu X[m]:;\(realPositionX);pozycja telefonu Y[m]:;\(realPositionY);ściana x[m]:;\(roomSideX);sciana y[m]:;\(roomSideY)\n\n"
+        csvResultString = "technologia:;\(technology);opis:;\(rangingDescription);czas;\(NSDate());pozycja telefonu X[m]:;\(realPositionX);pozycja telefonu Y[m]:;\(realPositionY);sciana x[m]:;\(roomSideX);sciana y[m]:;\(roomSideY)\n\n"
         csvResultString += "X;Y;dystans 1;dystans 2;dystans 3;dystans 4;roznica x; roznica y;roznica\n"
     }
     
