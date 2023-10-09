@@ -57,7 +57,7 @@ func getCoordinates(d1: Float, d2: Float, d3: Float, d4: Float, sideY: Float, si
     
     let YalterHeight1 = leftSideTriangleHeight != 0 ? pythagoreanHeight(b: leftSideTriangleHeight, c: d1) : (d1 + (sideY - (d1+d2))/2)
     let YalterHeight2 = rightSideTriangleHeight != 0 ? pythagoreanHeight(b: rightSideTriangleHeight, c: d4) : (d4 + (sideY - (d4+d3))/2)
-    let XalterHeight1 = bottomSideTriangleHeight != 0 ? pythagoreanHeight(b: rightSideTriangleHeight, c: d4) : (d1 + (sideX - (d1+d4))/2)
+    let XalterHeight1 = bottomSideTriangleHeight != 0 ? pythagoreanHeight(b: bottomSideTriangleHeight, c: d1) : (d1 + (sideX - (d1+d4))/2)
     let XalterHeight2 = topSideTriangleHeight != 0 ? pythagoreanHeight(b: topSideTriangleHeight, c: d2) : (d2 + (sideX - (d2+d3))/2)
     let x: Float = calculateAveragePosition(height1: leftSideTriangleHeight, height2: rightSideTriangleHeight, alterHeight1: XalterHeight1, alterHeight2: XalterHeight2, sideLength: sideX)
     let y: Float = calculateAveragePosition(height1: bottomSideTriangleHeight, height2: topSideTriangleHeight, alterHeight1: YalterHeight1, alterHeight2: YalterHeight2, sideLength: sideY)
