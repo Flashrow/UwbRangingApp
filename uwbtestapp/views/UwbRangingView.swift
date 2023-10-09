@@ -51,7 +51,7 @@ struct UwbRangingView :View{
                 Text("Difference:")
                 HStack{
                     Text("X: \(abs(uwbManager.positionX - self.realPositionX))")
-                    Text("Y: \(abs(uwbManager.positionX - self.realPositionY))")
+                    Text("Y: \(abs(uwbManager.positionY - self.realPositionY))")
                 }
             }.padding()
             Spacer()

@@ -8,7 +8,7 @@ import CoreBluetooth
 // #3   639BC26D-36C9-0DF1-2097-587F9D31A589
 // #4   3126A363-76A7-A10E-FBD3-BC96F67AB250
 
-class BleRangingManager: NSObject, CBCentralManagerDelegate {
+class BleRangingManager: NSObject, CBCentralManagerDelegate, ObservableObject {
     let estimoteUuids = [
         "D0D32325-8F64-3C55-78C3-E83EA49923EE",
         "4BA22D53-3484-A062-CFE7-081DA8B61741",

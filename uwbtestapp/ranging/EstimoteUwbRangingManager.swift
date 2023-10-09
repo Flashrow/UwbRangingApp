@@ -47,6 +47,7 @@ class EstimoteUWBManagerExample: NSObject, ObservableObject {
                             options: EstimoteUWBOptions(shouldHandleConnectivity: true,
                             isCameraAssisted: false)
         )
+        print("start UWB ranging")
         uwbManager?.startScanning()
     }
     

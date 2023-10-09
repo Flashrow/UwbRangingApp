@@ -13,7 +13,7 @@ struct BleRangingView :View{
     var realPositionX : Float!
     var realPositionY : Float!
     var testDescription: String!
-    var bleManager: BleRangingManager!
+    @ObservedObject var bleManager: BleRangingManager
     @State var isRanging : Bool = false
     
     init(roomSideX : Float, roomSideY : Float, realPositionX : Float, realPositionY : Float, testDescription : String) {
