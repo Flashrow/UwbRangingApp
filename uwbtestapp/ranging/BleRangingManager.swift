@@ -106,7 +106,7 @@ class BleRangingManager: NSObject, CBCentralManagerDelegate, ObservableObject {
     func calculateDistance(RSSI: Float, txPower: Float, n: Float) -> Float {
         let ratio: Float = RSSI / txPower
         if ratio < 1.0 {
-            return pow(ratio, 10)
+            return pow(10, ratio)
         } else {
             return pow(10, (txPower - RSSI) / (10 * n))
         }
